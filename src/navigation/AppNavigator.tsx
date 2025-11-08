@@ -1,12 +1,13 @@
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../screens/HomeScreen';
+import React from 'react';
 
+import BottomNavBar from '../components/BottomNavBar';
 import NewNoteScreen from '../screens/NewNoteScreen';
-import SummaryScreen from '../screens/SummaryScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 
 type RootStackParamList = {
+    Tabs: undefined;
     Home: undefined;
     NewNote: undefined;
     Summary: undefined;
@@ -18,10 +19,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
     return (
-        <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Navigator screenOptions={{ headerShown: false }} >
+            <Stack.Screen name="Tabs" component={BottomNavBar} />
+
             <Stack.Screen name="NewNote" component={NewNoteScreen} />
-            <Stack.Screen name="Summary" component={SummaryScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>
+
     );
 }
