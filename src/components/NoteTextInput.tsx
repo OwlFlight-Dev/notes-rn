@@ -6,17 +6,20 @@ type NewNoteInputProps = {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
+  maxLength?: number;
 };
 
 export default function NoteTextInput({
   value,
   onChangeText,
   placeholder = 'Please input note content',
+  maxLength = 200,
 }: NewNoteInputProps) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <TextInput
+          maxLength={maxLength}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
@@ -33,7 +36,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 16,
     flex: 1,
-    zIndex: 999,
+    zIndex: 1,
   },
   input: {
     backgroundColor: COLORS.white_5,

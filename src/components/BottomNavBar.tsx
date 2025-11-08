@@ -3,7 +3,6 @@ import { useNavigation } from '@react-navigation/native';
 import { Image, StyleSheet } from 'react-native';
 import { COLORS } from '../constants/colors';
 import HomeScreen from '../screens/HomeScreen';
-import NewNoteScreen from '../screens/NewNoteScreen';
 import SummaryScreen from '../screens/SummaryScreen';
 import NotesHeader from './Header';
 import IconButton from './IconButton';
@@ -56,15 +55,8 @@ export default function BottomNavBar() {
 
             />
             <Tab.Screen
-                name="NewNote"
-                component={NewNoteScreen}
+                name="Dummy"
                 options={{
-                    headerShown: true,
-                    header: () => (
-                        <NotesHeader
-                            title="New Note"
-                        />
-                    ),
                     tabBarButton: () => (
                         <IconButton
                             size={iconSize}
@@ -74,7 +66,9 @@ export default function BottomNavBar() {
                         />
                     ),
                 }}
-            />
+            >
+                {() => null}
+            </Tab.Screen>
             <Tab.Screen
                 name="Summary"
                 component={SummaryScreen}

@@ -1,20 +1,73 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import BottomTab from '../components/BottomTab';
 import Dropdown from '../components/Dropdown';
 import Header from '../components/Header';
 import NoteTextInput from '../components/NoteTextInput';
+import Popout from '../components/Popout';
 import ScreenWrapper from '../components/ScreenWrapper';
+import { addNote, getNextNoteId, NoteType } from '../storage/noteStorage';
 
+type NewNoteRouteProp = RouteProp<{ params: { category?: NoteType['category'] } }, 'params'>;
 
 export default function NewNoteScreen() {
+  const route = useRoute<NewNoteRouteProp>();
   const [category, setCategory] = useState<string | null>(null);
   const [note, setNote] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [popoutMessage, setPopoutMessage] = useState<string | null>(null);
+
+  const showPopout = (message: string) => {
+    setPopoutMessage(message);
+    setTimeout(() => setPopoutMessage(null), 2000);
+  };
+
+  useEffect(() => {
+    if (route.params?.category) {
+      setCategory(route.params.category);
+    }
+  }, [route.params]);
+
+  const handleSaveNote = async () => {
+    setDropdownOpen(false);
+
+    if (!category || !note.trim()) {
+      showPopout('Select category and enter note');
+      return;
+    }
+
+    try {
+      const id = await getNextNoteId();
+      const newNote = {
+        id: id.toString(),
+        category: category as 'work_and_study' | 'life' | 'health_and_wellbeing',
+        content: note.trim(),
+        createdAt: new Date().toISOString(),
+      };
+
+      await addNote(newNote);
+      showPopout('Note saved successfully');
+      setNote('');
+      setCategory(null);
+    } catch (err) {
+      console.error('Error saving note:', err);
+      showPopout('Failed to save note');
+    }
+  };
 
   return (
     <ScreenWrapper>
+      {popoutMessage && <Popout visible={true} message={popoutMessage} />}
+
       <Header title="New Note" showBackButton />
       <View style={styles.inner}>
+        {dropdownOpen && (
+          <Pressable
+            style={styles.screen}
+            onPress={() => setDropdownOpen(false)}
+          />
+        )}
         <Dropdown
           items={[
             { label: 'Work and Study', value: 'work_and_study' },
@@ -23,6 +76,9 @@ export default function NewNoteScreen() {
           ]}
           placeholder="Choose a category"
           onChangeValue={setCategory}
+          open={dropdownOpen}
+          setOpen={setDropdownOpen}
+          defaultValue={category}
         />
 
         <NoteTextInput
@@ -30,13 +86,22 @@ export default function NewNoteScreen() {
           onChangeText={setNote}
           placeholder="Please input note content"
         />
+
       </View>
-      <BottomTab buttonText="Save Note" onButtonPress={() => console.log('button pressed')} />
+      <BottomTab buttonText="Save Note" onButtonPress={handleSaveNote} />
     </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999
+  },
   inner: {
     flex: 1,
     width: '100%',
