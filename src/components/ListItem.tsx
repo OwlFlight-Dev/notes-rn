@@ -8,13 +8,15 @@ type ListItemProps = {
   iconName?: keyof typeof Ionicons.glyphMap;
   imageSource?: any;
   title: string;
-  onPress: () => void;
+  onPress?: () => void;
   chevron?: boolean;
+  height?: number;
 };
 
-export default function ListItem({ iconName, imageSource, title, onPress, chevron = false }: ListItemProps) {
+export default function ListItem({ iconName, imageSource, title, onPress, chevron = false, height }: ListItemProps) {
+  
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity style={[styles.container, { paddingBottom: height ?? 16 }]} onPress={onPress}>
       <View style={styles.left}>
         {(iconName || imageSource) && (
           <IconButton
@@ -32,7 +34,7 @@ export default function ListItem({ iconName, imageSource, title, onPress, chevro
 }
 
 const styles = StyleSheet.create({
-  button: {
+  container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: COLORS.white_5,

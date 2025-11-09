@@ -4,8 +4,8 @@ import BottomTab from '../components/BottomTab';
 import ConfirmModal from '../components/ConfirmModal';
 import Header from '../components/Header';
 import ListItem from '../components/ListItem';
-import Popout from '../components/Popout';
 import ScreenWrapper from '../components/ScreenWrapper';
+import { useToast } from '../context/ToastContext';
 import { deleteAllNotes } from '../storage/noteStorage';
 
 
@@ -13,10 +13,7 @@ export default function SettingsScreen() {
   const [popoutMessage, setPopoutMessage] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const showPopout = (message: string) => {
-    setPopoutMessage(message);
-    setTimeout(() => setPopoutMessage(null), 2000);
-  };
+  const { showToast } = useToast();
 
   const handleDeleteNotes = async () => {
     setModalVisible(true);
@@ -26,19 +23,16 @@ export default function SettingsScreen() {
     setModalVisible(false);
     try {
       await deleteAllNotes();
-      showPopout('All notes have been cleared');
+      showToast('All notes have been cleared');
     } catch (err) {
       console.error('Failed to delete notes', err);
-      showPopout('Failed to delete notes');
+      showToast('Failed to delete notes');
     }
   }
 
   return (
     <ScreenWrapper>
       <Header title="Settings" showBackButton />
-
-      {popoutMessage && <Popout visible={true} message={popoutMessage} />}
-
       <ConfirmModal
         visible={modalVisible}
         title="Confirm Delete"

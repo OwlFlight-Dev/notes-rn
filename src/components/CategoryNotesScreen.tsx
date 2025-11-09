@@ -10,13 +10,13 @@ import { NoteType, loadNotes } from '../storage/noteStorage';
 const CATEGORY_ICONS: Record<NoteType['category'], any> = {
   work_and_study: require('../assets/work-and-study.png'),
   life: require('../assets/life.png'),
-  health_and_wellbeing: require('../assets/health-and-wellness.png'),
+  health_and_wellness: require('../assets/health-and-wellness.png'),
 };
 
 const CATEGORY_TITLES: Record<NoteType['category'], string> = {
   work_and_study: 'Work and study',
   life: 'Life',
-  health_and_wellbeing: 'Health and wellbeing',
+  health_and_wellness: 'Health and wellness',
 };
 
 type RouteParams = {
@@ -45,11 +45,7 @@ export default function CategoryNotesScreen() {
   );
 
   const handlePressNote = (note: NoteType) => {
-    if (note.id.startsWith('placeholder')) {
-      navigation.navigate('NewNote', { category: note.category });
-    } else {
-      console.log('pressed note', note.id);
-    }
+      navigation.navigate('NoteDetails', { id: note.id });
   };
 
   return (
@@ -65,7 +61,7 @@ export default function CategoryNotesScreen() {
           notes.map((note) => (
             <ListItem
               key={note.id}
-              title={note.content}
+              title={note.content.slice(0, 20)}
               onPress={() => handlePressNote(note)}
               chevron
             />

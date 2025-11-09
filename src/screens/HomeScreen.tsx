@@ -15,13 +15,13 @@ type NotesByCategory = {
 const CATEGORY_ICONS: Record<NoteType['category'], any> = {
     work_and_study: require('../assets/work-and-study.png'),
     life: require('../assets/life.png'),
-    health_and_wellbeing: require('../assets/health-and-wellness.png'),
+    health_and_wellness: require('../assets/health-and-wellness.png'),
 };
 
 const CATEGORY_TITLES: Record<NoteType['category'], string> = {
     work_and_study: 'Work and study',
     life: 'Life',
-    health_and_wellbeing: 'Health and wellbeing',
+    health_and_wellness: 'Health and wellness',
 };
 
 export default function HomeScreen() {
@@ -66,7 +66,7 @@ export default function HomeScreen() {
         if (note.id.startsWith('placeholder')) {
             navigation.navigate('NewNote', { category: note.category });
         } else {
-            console.log('pressed note', note.id);
+            navigation.navigate('NoteDetails', { id: note.id });
         }
     };
 

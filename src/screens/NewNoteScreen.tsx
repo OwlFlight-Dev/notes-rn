@@ -5,8 +5,8 @@ import BottomTab from '../components/BottomTab';
 import Dropdown from '../components/Dropdown';
 import Header from '../components/Header';
 import NoteTextInput from '../components/NoteTextInput';
-import Popout from '../components/Popout';
 import ScreenWrapper from '../components/ScreenWrapper';
+import { useToast } from '../context/ToastContext';
 import { addNote, getNextNoteId, NoteType } from '../storage/noteStorage';
 
 type NewNoteRouteProp = RouteProp<{ params: { category?: NoteType['category'] } }, 'params'>;
@@ -16,12 +16,8 @@ export default function NewNoteScreen() {
   const [category, setCategory] = useState<string | null>(null);
   const [note, setNote] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [popoutMessage, setPopoutMessage] = useState<string | null>(null);
 
-  const showPopout = (message: string) => {
-    setPopoutMessage(message);
-    setTimeout(() => setPopoutMessage(null), 2000);
-  };
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (route.params?.category) {
@@ -33,7 +29,7 @@ export default function NewNoteScreen() {
     setDropdownOpen(false);
 
     if (!category || !note.trim()) {
-      showPopout('Select category and enter note');
+      showToast('Select category and enter note');
       return;
     }
 
@@ -41,25 +37,23 @@ export default function NewNoteScreen() {
       const id = await getNextNoteId();
       const newNote = {
         id: id.toString(),
-        category: category as 'work_and_study' | 'life' | 'health_and_wellbeing',
+        category: category as 'work_and_study' | 'life' | 'health_and_wellness',
         content: note.trim(),
         createdAt: new Date().toISOString(),
       };
 
       await addNote(newNote);
-      showPopout('Note saved successfully');
+      showToast('Note saved successfully');
       setNote('');
       setCategory(null);
     } catch (err) {
       console.error('Error saving note:', err);
-      showPopout('Failed to save note');
+      showToast('Failed to save note');
     }
   };
 
   return (
     <ScreenWrapper>
-      {popoutMessage && <Popout visible={true} message={popoutMessage} />}
-
       <Header title="New Note" showBackButton />
       <View style={styles.inner}>
         {dropdownOpen && (
@@ -72,7 +66,7 @@ export default function NewNoteScreen() {
           items={[
             { label: 'Work and Study', value: 'work_and_study' },
             { label: 'Life', value: 'life' },
-            { label: 'Health and Well-being', value: 'health_and_wellbeing' },
+            { label: 'Health and wellness', value: 'health_and_wellness' },
           ]}
           placeholder="Choose a category"
           onChangeValue={setCategory}

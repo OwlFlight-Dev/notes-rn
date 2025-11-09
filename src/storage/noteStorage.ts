@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type NoteType = {
   id: string;
-  category: 'work_and_study' | 'life' | 'health_and_wellbeing';
+  category: 'work_and_study' | 'life' | 'health_and_wellness';
   content: string;
   createdAt: string;
 };
@@ -51,7 +51,7 @@ export const getCategoryCounts = async (): Promise<Record<NoteType['category'], 
   const counts: Record<NoteType['category'], number> = {
     work_and_study: 0,
     life: 0,
-    health_and_wellbeing: 0,
+    health_and_wellness: 0,
   };
 
   for (const note of notes) {
@@ -59,5 +59,20 @@ export const getCategoryCounts = async (): Promise<Record<NoteType['category'], 
   }
 
   return counts;
+};
+
+export const getNoteById = async (id: string): Promise<NoteType | undefined> => {
+  const notes = await loadNotes();
+  return notes.find((n) => n.id === id);
+};
+
+export const deleteNote = async (id: string) => {
+  try {
+    const notes: NoteType[] = await loadNotes();
+    const updatedNotes = notes.filter(note => note.id !== id);
+    await saveNotes(updatedNotes);
+  } catch (err) {
+    console.error('Failed to delete note:', err);
+  }
 };
 

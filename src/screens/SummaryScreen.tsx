@@ -12,7 +12,7 @@ export default function SummaryScreen({ route }: any) {
     const [counts, setCounts] = useState({
         work_and_study: 0,
         life: 0,
-        health_and_wellbeing: 0,
+        health_and_wellness: 0,
     });
 
     const loadCounts = async () => {
@@ -54,7 +54,7 @@ export default function SummaryScreen({ route }: any) {
 
                     <Section title='Health and wellness' iconSource={require('../assets/avatar-health-and-wellness.png')} iconSize={50}>
                         <ListItem
-                            title={`This topic has a total of ${counts.health_and_wellbeing} records.`}
+                            title={`This topic has a total of ${counts.health_and_wellness} records.`}
 
                             onPress={() => console.log('pressed!')}
                         />
